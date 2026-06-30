@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>修改个人资料</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+<header></header>
+<main class="container">
+  <div class="form-box">
+    <h3 class="text-center text-main mb-4">修改个人信息</h3>
+    <div class="mb-3">
+      <label>用户名</label>
+      <input type="text" id="new-name" class="form-control">
+    </div>
+    <div class="mb-3">
+      <label>新密码（不修改留空）</label>
+      <input type="password" id="new-pwd" class="form-control">
+    </div>
+    <button class="btn btn-main w-100" id="save-info">保存修改</button>
+  </div>
+</main>
+<footer></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="js/common.js"></script>
+<script>
+  let loginUser = localStorage.getItem("loginUser") ? JSON.parse(localStorage.getItem("loginUser")) : null;
+  if(!loginUser) location.href="login.html";
+  $("#new-name").val(loginUser.name);
+  $("#save-info").click(function(){
+    let newName = $("#new-name").val().trim();
+    let newPwd = $("#new-pwd").val().trim();
+    if(!newName){
+      alert("用户名不能为空");
+      return;
+    }
+    // 更新登录用户
+    loginUser.name = newName;
+    if(newPwd) loginUser.pwd = newPwd;
+    localStorage.setItem("loginUser",JSON.stringify(loginUser));
+    // 更新总用户列表
+    let userAll = JSON.parse(localStorage.getItem("users"));
+    userAll = userAll.map(u=>{
+      if(u.id == loginUser.id){
+        u.name = newName;
+        if(newPwd) u.pwd = newPwd;
+      }
+      return u;
+    })
+    localStorage.setItem("users",JSON.stringify(userAll));
+    alert("修改成功！");
+    location.href="user_center.html";
+  })
+</script>
+</body>
+</html>
